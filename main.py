@@ -1,34 +1,34 @@
-import pygame as pg
-import requests
 from input import window_input
 from spn import get_spn
-from PIL import Image, ImageFont, ImageDraw
-from io import BytesIO
+from gen import *
+
+
+def arithm(spn, act):
+    intspn = [float(i) for i in spn.split(',')]
+    return str(intspn[0] + act) + ',' + str(intspn[1] + act)
 
 
 pg.init()
 screen = pg.display.set_mode(size := (600, 450))
 coordinates = window_input(screen, 'Ввведите координаты', size)
-toponym_longitude, toponym_lattitude = coordinates.split()
 spn = get_spn(coordinates)
-print(spn)
-map_params = {
-    "ll": ",".join([toponym_longitude, toponym_lattitude]),
-    "spn": spn,
-    "l": "sat"
-}
-map_api_server = "http://static-maps.yandex.ru/1.x/"
-response = requests.get(map_api_server, params=map_params)
-img = Image.open(BytesIO(
-    response.content))
-font = ImageFont.load_default()
-dr = ImageDraw.Draw(img)
-dr.text((0, 0), coordinates, font=font, fill=(0, 0, 0, 255))
-img.save('data.png')
-photo = pg.image.load('data.png')
-while True:
-    ev = [i.type for i in pg.event.get()]
-    if pg.QUIT in ev:
-        break
+run = True
+new = False
+photo = get_photo(coordinates, spn)
+while run:
+    for i in pg.event.get():
+        if i.type == pg.QUIT:
+            run = False
+        if i.type == pg.KEYDOWN:
+            if i.key == pg.K_PAGEDOWN and max([float(t) for t in spn.split(',')]) < 30:
+                spn = arithm(spn, 0.5)
+                new = True
+            elif i.key == pg.K_PAGEUP and min([float(t) for t in spn.split(',')]) > 1:
+                spn = arithm(spn, -0.5)
+                new = True
+    if new:
+        print(spn)
+        photo = get_photo(coordinates, spn)
+        new = False
     screen.blit(photo, (0, 0))
     pg.display.flip()

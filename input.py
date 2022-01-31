@@ -3,7 +3,7 @@ import pygame as pg
 
 def window_input(screen, message, size):
     keys = {getattr(pg, 'K_' + str(key)): str(key) for key in range(10)}
-    keys[pg.K_COMMA] = '.'
+    keys[pg.K_PERIOD] = '.'
     keys[pg.K_SPACE] = ' '
     run = True
     text = ''
