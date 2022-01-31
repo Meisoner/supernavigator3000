@@ -13,4 +13,4 @@ def get_spn(coordinates):
     json_response = response.json()
     up = keydictsearch(json_response, 'uppercorner')[0].split()
     down = keydictsearch(json_response, 'lowercorner')[0].split()
-    return str(float(up[0]) - float(down[0])) + ' ' + str(float(up[1]) - float(down[1]))
+    return str(float(up[0]) - float(down[0])) + ',' + str(float(up[1]) - float(down[1]))
